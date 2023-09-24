@@ -56,7 +56,8 @@ def fftFilt(data, lowCO=None, highCO=None):
 # Import data and find time length in seconds and minutes
 output = loadmat('proj1\proj01_data.mat')
 meg_data = output['meg_data']
-meg_label = output['meg_label']
+# meg_label from MATLAB array was coming up weird because it was a cell array, so we just rebuilt it
+meg_label = ["MLF11", "MZF01", "MRF11", "MLC11", "MZC01", "MRC11", "MLP11", "MZP01", "MRP11", "MLO11", "MZO01", "MRO11", "MLT11", "MRT11"]
 meg_locs = output['meg_locs']
 srate = output['srate']
 
@@ -66,7 +67,7 @@ length_sec = srate_sec*num_samples
 length_min = length_sec/60
 
 
-timespan = np.arange(0, np.shape(meg_data)[0], srate_sec)
+timespan = np.arange(0, length_sec, srate_sec)
 
 # Plot all signals
 plotAll(timespan, meg_data, meg_label, 'Raw Data', 'Time [sec]', 'MEG Data')
@@ -80,7 +81,7 @@ for i in range(14):
     filtered_meg_data[:, i] = filtered_data
 
 # Plot the filtered data
-plotAll(timespan, filtered_meg_data, meg_label, 'Filtered from 0.5-59Hz')
+plotAll(timespan, filtered_meg_data, meg_label, 'Filtered from 0.5-59Hz', 'Time [sec]', 'MEG Data')
 plt.show()
 
 
@@ -91,12 +92,40 @@ end_index = np.argmax(timespan >= 70)
 time_6070 = timespan[start_index:end_index + 1]
 filtered_meg_data_6070 = filtered_meg_data[start_index:end_index + 1, :]
 
+
 # Perform FFT on 60-70 sec window
 data_6070_FFT = np.fft.fft(filtered_meg_data_6070,axis=0)
-frequency_axis = np.fft.fftfreq(data_6070_FFT.shape[0], 1/srate)
+frequency_axis = np.transpose(np.fft.fftfreq(data_6070_FFT.shape[0], 1/srate))
 
-plotAll(time_6070,data_6070_FFT,meg_label,'FFT of Data at 60-70 Seconds')
+plotAll(frequency_axis,data_6070_FFT,meg_label,'FFT of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
+
 
 # Apply Hanning window and redo FFT
+hanning_window = np.hanning(len(filtered_meg_data_6070))
+data_6070_hanning = filtered_meg_data_6070 * hanning_window
+data_6070_hanning_FFT = np.fft.fft(data_6070_hanning,axis=0)
+frequency_axis = np.fft.fftfreq(data_6070_hanning_FFT.shape[0], 1/srate)
 
-data_6070_hanning = np.hanning()
+plotAll(frequency_axis,data_6070_hanning_FFT,meg_label,'FFT of Data at 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
+
+
+
+# Repeat for 60-120 seconds
+start_index = np.argmax(timespan >= 60)
+end_index = np.argmax(timespan >= 120)
+
+time_60120 = timespan[start_index:end_index + 1]
+filtered_meg_data_60120 = filtered_meg_data[start_index:end_index + 1, :]
+
+data_60120_FFT = np.fft.fft(filtered_meg_data_60120,axis=0)
+frequency_axis = np.fft.fftfreq(data_60120_FFT.shape[0], 1/srate)
+
+plotAll(frequency_axis,data_60120_FFT,meg_label,'FFT of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
+
+hanning_window = np.hanning(len(filtered_meg_data_60120))
+data_60120_hanning = filtered_meg_data_60120 * hanning_window
+data_60120_hanning_FFT = np.fft.fft(data_60120_hanning,axis=0)
+frequency_axis = np.fft.fftfreq(data_60120_hanning_FFT.shape[0], 1/srate)
+
+plotAll(frequency_axis,data_60120_hanning_FFT,meg_label,'FFT of Data at 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
+
