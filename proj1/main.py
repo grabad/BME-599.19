@@ -186,22 +186,26 @@ plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'PSD of Data at 4-6 Minute
 
 ## PROBLEM 8 ##
 maxFreq = 30
+length = 30
+f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+
+Zxx_all = np.zeros((np.size(f), np.size(t), 14))
+Zxx_all[:, :, 0] = np.abs(Zxx)
+
+for i in range(1,14):
+    f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+    Zxx_all[:, :, i] = np.abs(Zxx)
+
+vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
 fig = plt.figure(figsize=(12, 14))
-t = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
+tile = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
 for i in range(14):
     ax = fig.add_subplot(7, 2, i+1)
 
     name = meg_label[i]
 
-    f, t, Zxx = stft(filtered_meg_data[:3600, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
-    vmax = np.max(np.abs(Zxx)[f<maxFreq,:])
-    if i == 0:
-        Zxx_all = np.zeros((np.size(f), np.size(t), 14))
-    
-    Zxx_all[:, :, i] = np.abs(Zxx)
-
-    ax.pcolormesh(t, f, np.abs(Zxx), vmax=vmax)
+    mesh = ax.pcolormesh(t, f, Zxx_all[:, :, i], vmax=vmax, cmap='viridis')
     ax.plot(t, t*0, label=name)
     ax.set_ylim(0, maxFreq)
 
@@ -214,6 +218,10 @@ for i in range(14):
     leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
     for item in leg.legend_handles:
         item.set_visible(False)
+
+fig.subplots_adjust(right=0.8)
+cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+fig.colorbar(mesh, cax=cbar_ax)
 
 fig.text(0.5, 0.04, 'Time (s)', ha='center')
 fig.text(0.04, 0.5, 'Frequency (Hz)', va='center', rotation='vertical')
@@ -238,6 +246,28 @@ plotAll(t, power_all, meg_label, 'Power', 'Time [sec]', 'Power (8-12 Hz)')
 
 
 ## PROBLEM 11 ##
+average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
+vmax = np.max(average_tf)
 
+fig = plt.figure()
+plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
+plt.colorbar()
+plt.ylim((0, maxFreq))
+plt.xlabel('Time (s)')
+plt.ylabel('Frequency (Hz)')
+plt.title('Time-Frequency Average Across All Channels')
+
+
+## PROBLEM 12 ##
+log_average_tf = np.log10(average_tf)
+vmax = np.max(log_average_tf)
+
+fig = plt.figure()
+plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
+plt.colorbar()
+plt.ylim((0, maxFreq))
+plt.xlabel('Time (s)')
+plt.ylabel('Frequency (Hz)')
+plt.title('Time-Frequency Average Across All Channels (LOG)')
 
 plt.show()
