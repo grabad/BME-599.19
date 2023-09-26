@@ -144,8 +144,8 @@ plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Dat
 psd_6070 = np.abs(all_data_6070_FFT)**2 / (len(all_data_6070_FFT) * srate)
 psd_60120 = np.abs(all_data_60120_FFT)**2 / (len(all_data_60120_FFT) * srate)
 
-plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'PSD of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
-plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'PSD of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
+plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'PSD of Data at 60-70 Seconds', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
+plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'PSD of Data at 60-120 Seconds', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
 
 
 ## PROBLEM 7 ##
@@ -184,33 +184,38 @@ plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'PSD of Data at 4-6 Minute
 
 
 ## PROBLEM 8 ##
-maxFreq = 30
+# maxFreq = 30
 
-fig = plt.figure(figsize=(12, 14))
-t = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
-for i in range(14):
-    ax = fig.add_subplot(7, 2, i+1)
+# fig = plt.figure(figsize=(12, 14))
+# t = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
+# for i in range(14):
+#     ax = fig.add_subplot(7, 2, i+1)
 
-    name = meg_label[i]
+#     name = meg_label[i]
 
-    f, t, Zxx = stft(filtered_meg_data[:3600, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
-    vmax = np.max(np.abs(Zxx)[f<maxFreq,:])
+#     f, t, Zxx = stft(filtered_meg_data[:3600, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+#     vmax = np.max(np.abs(Zxx)[f<maxFreq,:])
+    # if i == 0:
+    #     Zxx_all = np.zeros((np.size(f), np.size(t), 14))
     
-    ax.pcolormesh(t, f, np.abs(Zxx), vmax=vmax)
-    ax.plot(t, t*0, label=name)
-    ax.set_ylim(0, maxFreq)
+    # Zxx_all[:, :, i] = np.abs(Zxx)
 
-    if i != 12 and i != 13:
-        ax.set_xticklabels([])
+#     ax.pcolormesh(t, f, np.abs(Zxx), vmax=vmax)
+#     ax.plot(t, t*0, label=name)
+#     ax.set_ylim(0, maxFreq)
 
-    if i % 2 == 1:
-        ax.set_yticklabels([])
+#     if i != 12 and i != 13:
+#         ax.set_xticklabels([])
+
+#     if i % 2 == 1:
+#         ax.set_yticklabels([])
     
-    leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
-    for item in leg.legend_handles:
-        item.set_visible(False)
+#     leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
+#     for item in leg.legend_handles:
+#         item.set_visible(False)
 
-fig.text(0.5, 0.04, 'Time (s)', ha='center')
-fig.text(0.04, 0.5, 'Frequency (Hz)', va='center', rotation='vertical')
-fig.suptitle('STFT', fontsize=16)
+# fig.text(0.5, 0.04, 'Time (s)', ha='center')
+# fig.text(0.04, 0.5, 'Frequency (Hz)', va='center', rotation='vertical')
+# fig.suptitle('STFT', fontsize=16)
+
 plt.show()

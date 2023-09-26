@@ -33,9 +33,14 @@ for i in range(14):
 
     name = meg_label[i]
 
-    f, t, Zxx = stft(filtered_meg_data[:3600, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+    f, t, Zxx = stft(filtered_meg_data[:3000, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
     vmax = np.max(np.abs(Zxx)[f<maxFreq,:])
     
+    if i == 0:
+        Zxx_all = np.zeros((np.size(f), np.size(t), 14))
+    
+    Zxx_all[:, :, i] = np.abs(Zxx)
+
     ax.pcolormesh(t, f, np.abs(Zxx), vmax=vmax)
     ax.plot(t, t*0, label=name)
     ax.set_ylim(0, maxFreq)
