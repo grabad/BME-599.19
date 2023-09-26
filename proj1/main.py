@@ -1,4 +1,3 @@
-# TEST TEST TESTTTTT
 import numpy as np
 from scipy.io import loadmat
 from scipy.signal import detrend
@@ -99,7 +98,7 @@ for i in range(14):
     all_data_6070_FFT[:,i] = data_6070_FFT
 
 frequency_axis_6070 = np.transpose(np.fft.fftfreq(data_6070_FFT.shape[0], 1/srate))
-plotAll(frequency_axis_6070,all_data_6070_FFT,meg_label,'FFT of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
+plotAll(frequency_axis_6070[:751],all_data_6070_FFT[:751],meg_label,'FFT of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
 
 
 # Apply Hanning window and redo FFT
@@ -111,7 +110,7 @@ for i in range(14):
     all_data_6070_hanning_FFT[:,i] = data_6070_hanning_FFT
     
 frequency_axis = np.transpose(np.fft.fftfreq(data_6070_hanning_FFT.shape[0], 1/srate))
-plotAll(frequency_axis,all_data_6070_hanning_FFT,meg_label,'FFT of Data at 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
+plotAll(frequency_axis[:751],all_data_6070_hanning_FFT[:751],meg_label,'FFT of Data at 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
 
 
 ## PROBLEM 5 ##
@@ -122,33 +121,33 @@ end_index = np.argmax(timespan >= 120)
 time_60120 = timespan[start_index:end_index + 1]
 filtered_meg_data_60120 = filtered_meg_data[start_index:end_index + 1, :]
 
-all_data_60120_FFT = np.zeros_like(filtered_meg_data_60120)
+all_data_60120_FFT = np.zeros((9001, 14))
 for i in range(14):
-    data_60120_FFT = np.abs(np.fft.fft(filtered_meg_data_60120,axis=0))
+    data_60120_FFT = np.abs(rfft(filtered_meg_data_60120[:,i]))
     all_data_60120_FFT[:,i] = data_60120_FFT
 
 frequency_axis_60120 = np.transpose(rfftfreq(data_60120_FFT.shape[0], 1/srate))
-plotAll(frequency_axis_60120,all_data_60120_FFT,meg_label,'FFT of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
+plotAll(frequency_axis_60120[:4501],all_data_60120_FFT[:4501],meg_label,'FFT of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude')
 
 hanning_window = np.hanning(len(filtered_meg_data_60120))
 
-all_data_60120_hanning_FFT = np.zeros_like(filtered_meg_data_60120)
+all_data_60120_hanning_FFT = np.zeros((9001, 14))
 for i in range(14):
     data_60120_hanning = filtered_meg_data_60120[:,i] * hanning_window
-    data_60120_hanning_FFT = np.abs(np.fft.fft(data_60120_hanning,axis=0))
+    data_60120_hanning_FFT = np.abs(rfft(data_60120_hanning,axis=0))
     all_data_60120_hanning_FFT[:,i] = data_60120_hanning_FFT
     
-frequency_axis = np.transpose(np.fft.fftfreq(data_60120_hanning_FFT.shape[0], 1/srate))
-plotAll(frequency_axis,all_data_60120_hanning_FFT,meg_label,'FFT of Data at 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
+
+plotAll(frequency_axis_60120[:4501],all_data_60120_hanning_FFT[:4501],meg_label,'FFT of Data at 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude')
 
 
 ## PROBLEM 6 ##
 # Calculate power spectrum density for 60-70 and 60-120
-psd_6070 = np.abs(all_data_6070_FFT)**2 / (len(filtered_meg_data_6070) * srate)
-psd_60120 = np.abs(all_data_60120_FFT)**2 / (len(filtered_meg_data_60120) * srate)
+psd_6070 = np.abs(all_data_6070_FFT)**2 / (len(all_data_6070_FFT) * srate)
+psd_60120 = np.abs(all_data_60120_FFT)**2 / (len(all_data_60120_FFT) * srate)
 
-plotAll(frequency_axis_6070,psd_6070,meg_label,'PSD of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Power')
-plotAll(frequency_axis_60120,psd_60120,meg_label,'PSD of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Power')
+plotAll(frequency_axis_6070[100:751],psd_6070[100:751],meg_label,'PSD of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Power')
+plotAll(frequency_axis_60120[100:4501],psd_60120[100:4501],meg_label,'PSD of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Power')
 
 
 ## PROBLEM 7 ##
@@ -166,7 +165,8 @@ for i in range(14):
 
 frequency_axis_02 = np.transpose(np.fft.fftfreq(data_02_FFT.shape[0], 1/srate))
 psd_02 = np.abs(all_data_02_FFT)**2 / (len(filtered_meg_data_02) * srate)
-plotAll(frequency_axis_02,psd_02,meg_label,'PSD of Data at 0-2 Minutes', 'Frequency [Hz]', 'Power')
+plotAll(frequency_axis_02[100:9001],psd_02[100:9001],meg_label,'PSD of Data at 0-2 Minutes', 'Frequency [Hz]', 'Power')
+
 
 # Evaluate PSD between 4-6 minutes
 start_index = np.argmax(timespan >= 240)
@@ -182,7 +182,7 @@ for i in range(14):
 
 frequency_axis_46 = np.transpose(np.fft.fftfreq(data_46_FFT.shape[0], 1/srate))
 psd_46 = np.abs(all_data_46_FFT)**2 / (len(filtered_meg_data_46) * srate)
-plotAll(frequency_axis_46,psd_46,meg_label,'PSD of Data at 4-6 Minutes', 'Frequency [Hz]', 'Power')
+plotAll(frequency_axis_46[100:9001],psd_46[100:9001],meg_label,'PSD of Data at 4-6 Minutes', 'Frequency [Hz]', 'Power')
 
 
 ## PROBLEM 8 ##
