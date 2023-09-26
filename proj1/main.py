@@ -105,7 +105,7 @@ timespan = np.arange(0, length_sec, srate_sec)
 
 ## PROBLEM 2 ##
 # Plot all signals
-plotAll(timespan, meg_data, meg_label, 'Raw MEG Data', 'Time [sec]', 'MEG Data [AU]')
+# plotAll(timespan, meg_data, meg_label, 'Raw MEG Data', 'Time [sec]', 'MEG Data [AU]')
 
 
 ## PROBLEM 3 ##
@@ -114,7 +114,7 @@ plotAll(timespan, meg_data, meg_label, 'Raw MEG Data', 'Time [sec]', 'MEG Data [
 filtered_meg_data = np.loadtxt("proj1/filtered_meg_data.csv", delimiter=",", dtype=float)
 
 # Plot the filtered data
-plotAll(timespan, filtered_meg_data, meg_label, 'MEG Data, Filtered from 0.5-59Hz', 'Time [sec]', 'MEG Data [AU]')
+# plotAll(timespan, filtered_meg_data, meg_label, 'MEG Data, Filtered from 0.5-59Hz', 'Time [sec]', 'MEG Data [AU]')
 
 
 ## PROBLEM 4 ##
@@ -133,7 +133,7 @@ for i in range(14):
     all_data_6070_FFT[:, i] = data_6070_FFT
 
 frequency_axis_6070 = np.transpose(rfftfreq(filtered_meg_data_6070.shape[0], 1/srate))
-plotAll(frequency_axis_6070, all_data_6070_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
+# plotAll(frequency_axis_6070, all_data_6070_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 # Apply Hanning window and redo FFT
@@ -144,7 +144,7 @@ for i in range(14):
     data_6070_hanning_FFT = np.abs(rfft(data_6070_hanning))
     all_data_6070_hanning_FFT[:, i] = data_6070_hanning_FFT
     
-plotAll(frequency_axis_6070, all_data_6070_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
+# plotAll(frequency_axis_6070, all_data_6070_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 ## PROBLEM 5 ##
@@ -161,7 +161,7 @@ for i in range(14):
     all_data_60120_FFT[:, i] = data_60120_FFT
 
 frequency_axis_60120 = np.transpose(rfftfreq(filtered_meg_data_60120.shape[0], 1/srate))
-plotAll(frequency_axis_60120, all_data_60120_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
+# plotAll(frequency_axis_60120, all_data_60120_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 hanning_window = np.hanning(len(filtered_meg_data_60120))
 
@@ -172,7 +172,7 @@ for i in range(14):
     all_data_60120_hanning_FFT[:, i] = data_60120_hanning_FFT
     
 
-plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
+# plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 ## PROBLEM 6 ##
@@ -180,8 +180,8 @@ plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Fil
 psd_6070 = np.abs(all_data_6070_FFT)**2 / (len(all_data_6070_FFT) * srate)
 psd_60120 = np.abs(all_data_60120_FFT)**2 / (len(all_data_60120_FFT) * srate)
 
-plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'Power Spectrum Density of Data from 60-70 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
-plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'Power Spectrum Density of Data from 60-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
+# plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'Power Spectrum Density of Data from 60-70 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
+# plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'Power Spectrum Density of Data from 60-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
 
 
 ## PROBLEM 7 ##
@@ -199,7 +199,7 @@ for i in range(14):
 
 frequency_axis_02 = np.transpose(rfftfreq(filtered_meg_data_02.shape[0], 1/srate))
 psd_02 = np.abs(all_data_02_FFT)**2 / (np.shape(filtered_meg_data_02)[0] * srate)
-plotAll(frequency_axis_02, psd_02*(10**7), meg_label, 'Power Spectrum Density of Data from 0-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-7]', xlims=(0.5, 15))
+# plotAll(frequency_axis_02, psd_02*(10**7), meg_label, 'Power Spectrum Density of Data from 0-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-7]', xlims=(0.5, 15))
 
 
 # Evaluate PSD between 4-6 minutes
@@ -216,65 +216,65 @@ for i in range(14):
 
 frequency_axis_46 = np.transpose(rfftfreq(filtered_meg_data_46.shape[0], 1/srate))
 psd_46 = np.abs(all_data_46_FFT)**2 / (len(filtered_meg_data_46) * srate)
-plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'Power Spectrum Density of Data from 240-360 Seconds', 'Frequency [Hz]', '[AU^2/Hz*10^-6]', xlims=(0.5, 15))
+# plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'Power Spectrum Density of Data from 240-360 Seconds', 'Frequency [Hz]', '[AU^2/Hz*10^-6]', xlims=(0.5, 15))
 
 
 ## PROBLEM 8 ##
-# maxFreq = 30
-# length = 2400
-# f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+maxFreq = 60
+length = 2400
+f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
 
-# Zxx_all = np.zeros((np.size(f), np.size(t), 14))
-# Zxx_all[:, :, 0] = np.abs(Zxx)
+Zxx_all = np.zeros((np.size(f), np.size(t), 14))
+Zxx_all[:, :, 0] = np.abs(Zxx)
 
-# for i in range(1,14):
-#     f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
-#     Zxx_all[:, :, i] = np.abs(Zxx)
+for i in range(1,14):
+    f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+    Zxx_all[:, :, i] = np.abs(Zxx)
 
-# vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
+vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
-# plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
+# plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform, All Channels', 'Time [sec]', 'Frequency [Hz]')
 
-# ## PROBLEM 9 ##
-# power_all = np.zeros((np.size(t), 14))
-# for i in range(14):
-#     power = trapezoid(Zxx_all[(8 <= f) & (f <= 12), :, i], x=f[(8 <= f) & (f <= 12)], axis=0)
-#     power_all[:,i] = power
+## PROBLEM 9 ##
+power_all = np.zeros((np.size(t), 14))
+for i in range(14):
+    power = trapezoid(Zxx_all[(8 <= f) & (f <= 12), :, i], x=f[(8 <= f) & (f <= 12)], axis=0)
+    power_all[:,i] = power
     
-# fig = plt.figure()
-# plt.plot(t,power_all[:, 10])
-# plt.xlabel('Time [sec]')
-# plt.ylabel('Power [AU^2]')
-# plt.title('8-12Hz Power as Time Series, Channel MZO')
+fig = plt.figure()
+plt.plot(t,power_all[:, 10])
+plt.xlabel('Time [sec]')
+plt.ylabel('Power [AU^2]')
+plt.title('8-12Hz Power as Time Series, Channel MZO')
 
 
-# ## PROBLEM 10 ##
-# plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
+## PROBLEM 10 ##
+plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
 
 
-# ## PROBLEM 11 ##
-# average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
-# vmax = np.max(average_tf)
+## PROBLEM 11 ##
+average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
+vmax = np.max(average_tf)
 
-# fig = plt.figure()
-# plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
-# plt.colorbar()
-# plt.ylim((0, maxFreq))
-# plt.xlabel('Time [sec]')
-# plt.ylabel('Frequency [Hz]')
-# plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
+fig = plt.figure()
+plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
+plt.colorbar()
+plt.ylim((0, maxFreq))
+plt.xlabel('Time [sec]')
+plt.ylabel('Frequency [Hz]')
+plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
 
 
-# ## PROBLEM 12 ##
-# log_average_tf = np.log10(average_tf)
-# vmax = np.max(log_average_tf)
+## PROBLEM 12 ##
+log_average_tf = np.log10(average_tf)
+vmax = np.max(log_average_tf)
 
-# fig = plt.figure()
-# plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
-# plt.colorbar()
-# plt.ylim((0, maxFreq))
-# plt.xlabel('Time [sec]')
-# plt.ylabel('Frequency [Hz]')
-# plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
+fig = plt.figure()
+plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
+plt.colorbar()
+plt.ylim((0, maxFreq))
+plt.xlabel('Time [sec]')
+plt.ylabel('Frequency [Hz]')
+plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
 
 plt.show()
