@@ -41,7 +41,9 @@ def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None
         if i % 2 == 1:
             ax.set_yticklabels([])
 
-        ax.legend(loc='upper right')
+        leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True, loc='upper right')
+        for item in leg.legend_handles:
+            item.set_visible(False)
 
         if xlims is not None:
             ax.set_xlim(xlims)
@@ -101,7 +103,7 @@ timespan = np.arange(0, length_sec, srate_sec)
 
 ## PROBLEM 2 ##
 # Plot all signals
-plotAll(timespan, meg_data, meg_label, 'Raw Data', 'Time [sec]', 'MEG Data')
+plotAll(timespan, meg_data, meg_label, 'Raw MEG Data', 'Time [sec]', 'MEG Data [AU]')
 
 
 ## PROBLEM 3 ##
@@ -110,7 +112,7 @@ plotAll(timespan, meg_data, meg_label, 'Raw Data', 'Time [sec]', 'MEG Data')
 filtered_meg_data = np.loadtxt("proj1/filtered_meg_data.csv", delimiter=",", dtype=float)
 
 # Plot the filtered data
-plotAll(timespan, filtered_meg_data, meg_label, 'Filtered from 0.5-59Hz', 'Time [sec]', 'MEG Data')
+plotAll(timespan, filtered_meg_data, meg_label, 'MEG Data, Filtered from 0.5-59Hz', 'Time [sec]', 'MEG Data [AU]')
 
 
 ## PROBLEM 4 ##
@@ -129,7 +131,7 @@ for i in range(14):
     all_data_6070_FFT[:, i] = data_6070_FFT
 
 frequency_axis_6070 = np.transpose(rfftfreq(filtered_meg_data_6070.shape[0], 1/srate))
-plotAll(frequency_axis_6070, all_data_6070_FFT, meg_label, 'FFT of Data at 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude', xlims=(0.5, 30))
+plotAll(frequency_axis_6070, all_data_6070_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 # Apply Hanning window and redo FFT
@@ -140,7 +142,7 @@ for i in range(14):
     data_6070_hanning_FFT = np.abs(rfft(data_6070_hanning))
     all_data_6070_hanning_FFT[:, i] = data_6070_hanning_FFT
     
-plotAll(frequency_axis_6070, all_data_6070_hanning_FFT, meg_label, 'FFT of Data at 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude', xlims=(0.5, 30))
+plotAll(frequency_axis_6070, all_data_6070_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-70 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 ## PROBLEM 5 ##
@@ -157,7 +159,7 @@ for i in range(14):
     all_data_60120_FFT[:, i] = data_60120_FFT
 
 frequency_axis_60120 = np.transpose(rfftfreq(filtered_meg_data_60120.shape[0], 1/srate))
-plotAll(frequency_axis_60120, all_data_60120_FFT, meg_label, 'FFT of Data at 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude', xlims=(0.5, 30))
+plotAll(frequency_axis_60120, all_data_60120_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (No Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 hanning_window = np.hanning(len(filtered_meg_data_60120))
 
@@ -168,7 +170,7 @@ for i in range(14):
     all_data_60120_hanning_FFT[:, i] = data_60120_hanning_FFT
     
 
-plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Data at 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude', xlims=(0.5, 30))
+plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Filtered Data from 60-120 Seconds (With Hanning)', 'Frequency [Hz]', 'Amplitude [AU]', xlims=(0.5, 30))
 
 
 ## PROBLEM 6 ##
@@ -176,8 +178,8 @@ plotAll(frequency_axis_60120, all_data_60120_hanning_FFT, meg_label, 'FFT of Dat
 psd_6070 = np.abs(all_data_6070_FFT)**2 / (len(all_data_6070_FFT) * srate)
 psd_60120 = np.abs(all_data_60120_FFT)**2 / (len(all_data_60120_FFT) * srate)
 
-plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'PSD of Data at 60-70 Seconds', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
-plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'PSD of Data at 60-120 Seconds', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
+plotAll(frequency_axis_6070, psd_6070*(10**6), meg_label, 'Power Spectrum Density of Data from 60-70 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
+plotAll(frequency_axis_60120, psd_60120*(10**6), meg_label, 'Power Spectrum Density of Data from 60-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-6]', xlims=(0.5, 15))
 
 
 ## PROBLEM 7 ##
@@ -195,7 +197,7 @@ for i in range(14):
 
 frequency_axis_02 = np.transpose(rfftfreq(filtered_meg_data_02.shape[0], 1/srate))
 psd_02 = np.abs(all_data_02_FFT)**2 / (np.shape(filtered_meg_data_02)[0] * srate)
-plotAll(frequency_axis_02, psd_02*(10**7), meg_label, 'PSD of Data at 0-2 Minutes', 'Frequency [Hz]', 'Power (*10^-7)', xlims=(0.5, 15))
+plotAll(frequency_axis_02, psd_02*(10**7), meg_label, 'Power Spectrum Density of Data from 0-120 Seconds', 'Frequency [Hz]', 'Power [AU^2/Hz*10^-7]', xlims=(0.5, 15))
 
 
 # Evaluate PSD between 4-6 minutes
@@ -212,7 +214,7 @@ for i in range(14):
 
 frequency_axis_46 = np.transpose(rfftfreq(filtered_meg_data_46.shape[0], 1/srate))
 psd_46 = np.abs(all_data_46_FFT)**2 / (len(filtered_meg_data_46) * srate)
-plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'PSD of Data at 4-6 Minutes', 'Frequency [Hz]', 'Power (*10^-6)', xlims=(0.5, 15))
+plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'Power Spectrum Density of Data from 240-360 Seconds', 'Frequency [Hz]', '[AU^2/Hz*10^-6]', xlims=(0.5, 15))
 
 
 ## PROBLEM 8 ##
@@ -229,7 +231,7 @@ for i in range(1,14):
 
 vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
-plotSTFT(t, f, Zxx_all, meg_label, 'STFT', 'Time (s)', 'Frequency (Hz)')
+plotSTFT(t, f, Zxx_all, meg_label, maxFreq, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
 
 ## PROBLEM 9 ##
 power_all = np.zeros((np.size(t), 14))
@@ -240,12 +242,12 @@ for i in range(14):
 fig = plt.figure()
 plt.plot(t,power_all[:, 10])
 plt.xlabel('Time [sec]')
-plt.ylabel('Power')
-plt.title('Power as Time Series: MZO')
+plt.ylabel('Power [AU^2]')
+plt.title('8-12Hz Power as Time Series, Channel MZO')
 
 
 ## PROBLEM 10 ##
-plotAll(t, power_all, meg_label, 'Power', 'Time [sec]', 'Power (8-12 Hz)')
+plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
 
 
 ## PROBLEM 11 ##
@@ -256,9 +258,9 @@ fig = plt.figure()
 plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
 plt.colorbar()
 plt.ylim((0, maxFreq))
-plt.xlabel('Time (s)')
-plt.ylabel('Frequency (Hz)')
-plt.title('Time-Frequency Average Across All Channels')
+plt.xlabel('Time [sec]')
+plt.ylabel('Frequency [Hz]')
+plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
 
 
 ## PROBLEM 12 ##
@@ -269,8 +271,8 @@ fig = plt.figure()
 plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
 plt.colorbar()
 plt.ylim((0, maxFreq))
-plt.xlabel('Time (s)')
-plt.ylabel('Frequency (Hz)')
-plt.title('Time-Frequency Average Across All Channels (LOG)')
+plt.xlabel('Time [sec]')
+plt.ylabel('Frequency [Hz]')
+plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
 
 plt.show()

@@ -8,6 +8,7 @@ from itertools import cycle
 import matplotlib.pyplot as plt
 
 sns.set()
+
 def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None):
     fig = plt.figure(figsize=(12, 14))
     t = fig.add_gridspec(7, 2, wspace=0.05, hspace=0.05)
@@ -39,7 +40,9 @@ def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None
         if i % 2 == 1:
             ax.set_yticklabels([])
 
-        ax.legend(loc='upper right')
+        leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True, loc='upper right')
+        for item in leg.legend_handles:
+            item.set_visible(False)
 
         if xlims is not None:
             ax.set_xlim(xlims)
@@ -49,7 +52,7 @@ def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None
     fig.suptitle(figTitle, fontsize=16)
     #plt.show()
 
-def plotSTFT(t, f, Zxx_all, meg_label, figTitle, figXLabel, figYLabel,):
+def plotSTFT(t, f, Zxx_all, maxFreq, meg_label, figTitle, figXLabel, figYLabel, ):
     fig = plt.figure(figsize=(12, 14))
     tile = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
     for i in range(14):
@@ -98,6 +101,8 @@ length_min = length_sec/60
 timespan = np.arange(0, length_sec, srate_sec)
 filtered_meg_data = np.loadtxt("proj1/filtered_meg_data.csv", delimiter=",", dtype=float)
 
+plotAll(timespan, filtered_meg_data, meg_label, 'Filtered from 0.5-59Hz', 'Time (s)', 'MEG Data')
+
 maxFreq = 30
 length = 30
 f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
@@ -105,16 +110,16 @@ f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate,
 Zxx_all = np.zeros((np.size(f), np.size(t), 14))
 Zxx_all[:, :, 0] = np.abs(Zxx)
 
-for i in range(1,14):
+for i in range(1, 14):
     f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
     Zxx_all[:, :, i] = np.abs(Zxx)
 
-plotSTFT(t, f, Zxx_all, meg_label, 'STFT', 'Time (s)', 'Frequency (Hz)')
+plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'STFT', 'Time (s)', 'Frequency (Hz)')
 
 power_all = np.zeros((np.size(t), 14))
 for i in range(14):
     power = trapezoid(Zxx_all[(8 <= f) & (f <= 12), :, i], x=f[(8 <= f) & (f <= 12)], axis=0)
-    power_all[:,i] = power
+    power_all[:, i] = power
 
 
 plotAll(t, power_all, meg_label, 'Power', 'Time [sec]', 'Power (8-12 Hz)')
@@ -139,6 +144,6 @@ plt.colorbar()
 plt.ylim((0, maxFreq))
 plt.xlabel('Time (s)')
 plt.ylabel('Frequency (Hz)')
-plt.title('Time-Frequency Average Across All Channels (LOG)')
+plt.title('Time-Frequency\nAverage Across All Channels (LOG)')
 
 plt.show()
