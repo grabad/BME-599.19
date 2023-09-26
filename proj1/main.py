@@ -53,13 +53,15 @@ def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None
     fig.suptitle(figTitle, fontsize=16)
     #plt.show()
 
-def plotSTFT(t, f, Zxx_all, meg_label, figTitle, figXLabel, figYLabel,):
+def plotSTFT(t, f, Zxx_all, maxFreq, meg_label, figTitle, figXLabel, figYLabel, ):
     fig = plt.figure(figsize=(12, 14))
     tile = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
     for i in range(14):
         ax = fig.add_subplot(7, 2, i+1)
-
         name = meg_label[i]
+
+        Zxx = Zxx_all[:, :, i]
+        vmax = np.max(Zxx[f<maxFreq, :])
 
         mesh = ax.pcolormesh(t, f, Zxx, vmax=vmax, cmap='viridis')
         plt.colorbar(mesh, aspect=10, pad=0.05)
@@ -76,9 +78,9 @@ def plotSTFT(t, f, Zxx_all, meg_label, figTitle, figXLabel, figYLabel,):
         for item in leg.legend_handles:
             item.set_visible(False)
 
-    fig.subplots_adjust(right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    fig.colorbar(mesh, cax=cbar_ax)
+    # fig.subplots_adjust(right=0.8)
+    # cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    # fig.colorbar(mesh, cax=cbar_ax)
 
     fig.text(0.5, 0.04, figXLabel, ha='center')
     fig.text(0.04, 0.5, figYLabel, va='center', rotation='vertical')
@@ -231,7 +233,7 @@ for i in range(1,14):
 
 vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
-plotSTFT(t, f, Zxx_all, meg_label, maxFreq, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
+plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
 
 ## PROBLEM 9 ##
 power_all = np.zeros((np.size(t), 14))
