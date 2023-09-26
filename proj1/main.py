@@ -220,61 +220,61 @@ plotAll(frequency_axis_46, psd_46*(10**6), meg_label, 'Power Spectrum Density of
 
 
 ## PROBLEM 8 ##
-maxFreq = 30
-length = 30
-f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+# maxFreq = 30
+# length = 2400
+# f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
 
-Zxx_all = np.zeros((np.size(f), np.size(t), 14))
-Zxx_all[:, :, 0] = np.abs(Zxx)
+# Zxx_all = np.zeros((np.size(f), np.size(t), 14))
+# Zxx_all[:, :, 0] = np.abs(Zxx)
 
-for i in range(1,14):
-    f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
-    Zxx_all[:, :, i] = np.abs(Zxx)
+# for i in range(1,14):
+#     f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+#     Zxx_all[:, :, i] = np.abs(Zxx)
 
-vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
+# vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
-plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
+# plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform from ADD TIME', 'Time [sec])', 'Frequency [Hz]')
 
-## PROBLEM 9 ##
-power_all = np.zeros((np.size(t), 14))
-for i in range(14):
-    power = trapezoid(Zxx_all[(8 <= f) & (f <= 12), :, i], x=f[(8 <= f) & (f <= 12)], axis=0)
-    power_all[:,i] = power
+# ## PROBLEM 9 ##
+# power_all = np.zeros((np.size(t), 14))
+# for i in range(14):
+#     power = trapezoid(Zxx_all[(8 <= f) & (f <= 12), :, i], x=f[(8 <= f) & (f <= 12)], axis=0)
+#     power_all[:,i] = power
     
-fig = plt.figure()
-plt.plot(t,power_all[:, 10])
-plt.xlabel('Time [sec]')
-plt.ylabel('Power [AU^2]')
-plt.title('8-12Hz Power as Time Series, Channel MZO')
+# fig = plt.figure()
+# plt.plot(t,power_all[:, 10])
+# plt.xlabel('Time [sec]')
+# plt.ylabel('Power [AU^2]')
+# plt.title('8-12Hz Power as Time Series, Channel MZO')
 
 
-## PROBLEM 10 ##
-plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
+# ## PROBLEM 10 ##
+# plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
 
 
-## PROBLEM 11 ##
-average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
-vmax = np.max(average_tf)
+# ## PROBLEM 11 ##
+# average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
+# vmax = np.max(average_tf)
 
-fig = plt.figure()
-plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
-plt.colorbar()
-plt.ylim((0, maxFreq))
-plt.xlabel('Time [sec]')
-plt.ylabel('Frequency [Hz]')
-plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
+# fig = plt.figure()
+# plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
+# plt.colorbar()
+# plt.ylim((0, maxFreq))
+# plt.xlabel('Time [sec]')
+# plt.ylabel('Frequency [Hz]')
+# plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
 
 
-## PROBLEM 12 ##
-log_average_tf = np.log10(average_tf)
-vmax = np.max(log_average_tf)
+# ## PROBLEM 12 ##
+# log_average_tf = np.log10(average_tf)
+# vmax = np.max(log_average_tf)
 
-fig = plt.figure()
-plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
-plt.colorbar()
-plt.ylim((0, maxFreq))
-plt.xlabel('Time [sec]')
-plt.ylabel('Frequency [Hz]')
-plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
+# fig = plt.figure()
+# plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
+# plt.colorbar()
+# plt.ylim((0, maxFreq))
+# plt.xlabel('Time [sec]')
+# plt.ylabel('Frequency [Hz]')
+# plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
 
 plt.show()
