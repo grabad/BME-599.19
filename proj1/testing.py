@@ -33,7 +33,7 @@ for i in range(14):
 
     name = meg_label[i]
 
-    f, t, Zxx = stft(filtered_meg_data[:3000, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
+    f, t, Zxx = stft(filtered_meg_data[:3600, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
     vmax = np.max(np.abs(Zxx)[f<maxFreq,:])
     
     ax.pcolormesh(t, f, np.abs(Zxx), vmax=vmax)
@@ -49,9 +49,6 @@ for i in range(14):
     leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
     for item in leg.legend_handles:
         item.set_visible(False)
-
-    # if i == 5:
-    #     fig.colorbar()
 
 fig.text(0.5, 0.04, 'Time (s)', ha='center')
 fig.text(0.04, 0.5, 'Frequency (Hz)', va='center', rotation='vertical')
