@@ -51,6 +51,37 @@ def plotAll(x_data, data, dataLabels, figTitle, figXLabel, figYLabel, xlims=None
     fig.suptitle(figTitle, fontsize=16)
     #plt.show()
 
+def plotSTFT(t, f, Zxx_all, meg_label, figTitle, figXLabel, figYLabel,):
+    fig = plt.figure(figsize=(12, 14))
+    tile = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
+    for i in range(14):
+        ax = fig.add_subplot(7, 2, i+1)
+
+        name = meg_label[i]
+
+        mesh = ax.pcolormesh(t, f, Zxx, vmax=vmax, cmap='viridis')
+        plt.colorbar(mesh, aspect=10, pad=0.05)
+        ax.plot(t, t*0, label=name)
+        ax.set_ylim(0, maxFreq)
+
+        if i != 12 and i != 13:
+            ax.set_xticklabels([])
+
+        if i % 2 == 1:
+            ax.set_yticklabels([])
+        
+        leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
+        for item in leg.legend_handles:
+            item.set_visible(False)
+
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    fig.colorbar(mesh, cax=cbar_ax)
+
+    fig.text(0.5, 0.04, figXLabel, ha='center')
+    fig.text(0.04, 0.5, figYLabel, va='center', rotation='vertical')
+    fig.suptitle(figTitle, fontsize=16)
+
 ## PROBLEM 1 ##
 # Import data and find time length in seconds and minutes
 output = loadmat('proj1/proj01_data.mat')
@@ -198,35 +229,7 @@ for i in range(1,14):
 
 vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
 
-fig = plt.figure(figsize=(12, 14))
-tile = fig.add_gridspec(7, 2, wspace=0.5, hspace=0.05)
-for i in range(14):
-    ax = fig.add_subplot(7, 2, i+1)
-
-    name = meg_label[i]
-
-    mesh = ax.pcolormesh(t, f, Zxx_all[:, :, i], vmax=vmax, cmap='viridis')
-    ax.plot(t, t*0, label=name)
-    ax.set_ylim(0, maxFreq)
-
-    if i != 12 and i != 13:
-        ax.set_xticklabels([])
-
-    if i % 2 == 1:
-        ax.set_yticklabels([])
-    
-    leg = ax.legend(handlelength=0, handletextpad=0, fancybox=True)
-    for item in leg.legend_handles:
-        item.set_visible(False)
-
-fig.subplots_adjust(right=0.8)
-cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-fig.colorbar(mesh, cax=cbar_ax)
-
-fig.text(0.5, 0.04, 'Time (s)', ha='center')
-fig.text(0.04, 0.5, 'Frequency (Hz)', va='center', rotation='vertical')
-fig.suptitle('STFT', fontsize=16)
-
+plotSTFT(t, f, Zxx_all, meg_label, 'STFT', 'Time (s)', 'Frequency (Hz)')
 
 ## PROBLEM 9 ##
 power_all = np.zeros((np.size(t), 14))
