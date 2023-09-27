@@ -215,7 +215,7 @@ psd_46 = np.abs(all_data_46_FFT)**2 / (len(filtered_meg_data_46) * srate)
 
 
 ## PROBLEM 8 ##
-maxFreq = 70
+maxFreq = 59
 length = 2400
 f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
 
