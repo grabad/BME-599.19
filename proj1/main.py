@@ -78,10 +78,6 @@ def plotSTFT(t, f, Zxx_all, maxFreq, meg_label, figTitle, figXLabel, figYLabel, 
         for item in leg.legend_handles:
             item.set_visible(False)
 
-    # fig.subplots_adjust(right=0.8)
-    # cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    # fig.colorbar(mesh, cax=cbar_ax)
-
     fig.text(0.5, 0.04, figXLabel, ha='center')
     fig.text(0.04, 0.5, figYLabel, va='center', rotation='vertical')
     fig.suptitle(figTitle, fontsize=16)
