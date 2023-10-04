@@ -61,9 +61,8 @@ def plotSTFT(t, f, Zxx_all, maxFreq, meg_label, figTitle, figXLabel, figYLabel, 
         name = meg_label[i]
 
         Zxx = Zxx_all[:, :, i]
-        vmax = np.max(Zxx[f<maxFreq, :])
 
-        mesh = ax.pcolormesh(t, f, Zxx, vmax=vmax, cmap='viridis')
+        mesh = ax.pcolormesh(t, f, Zxx, cmap='viridis')
         plt.colorbar(mesh, aspect=10, pad=0.05)
         ax.plot(t, t*0, label=name)
         ax.set_ylim(0, maxFreq)
@@ -216,7 +215,7 @@ psd_46 = np.abs(all_data_46_FFT)**2 / (len(filtered_meg_data_46) * srate)
 
 
 ## PROBLEM 8 ##
-maxFreq = 60
+maxFreq = 59
 length = 2400
 f, t, Zxx = stft(filtered_meg_data[:length*srate, 0], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
 
@@ -227,9 +226,11 @@ for i in range(1,14):
     f, t, Zxx = stft(filtered_meg_data[:length*srate, i], fs=srate, nperseg=4*srate, noverlap=int(3.5*srate))
     Zxx_all[:, :, i] = np.abs(Zxx)
 
-vmax = np.max(np.abs(Zxx_all)[f<maxFreq, :, :])
+f_range = (0.5 <= f) & (f <= maxFreq)
+Zxx_all = Zxx_all[f_range, :, :]
+f = f[f_range]
 
-# plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform, All Channels', 'Time [sec]', 'Frequency [Hz]')
+plotSTFT(t, f, Zxx_all, maxFreq, meg_label, 'Short Time Fourier Transform, All Channels', 'Time [sec]', 'Frequency [Hz]')
 
 ## PROBLEM 9 ##
 power_all = np.zeros((np.size(t), 14))
@@ -241,21 +242,17 @@ fig = plt.figure()
 plt.plot(t,power_all[:, 10])
 plt.xlabel('Time [sec]')
 plt.ylabel('Power [AU^2]')
-plt.title('8-12Hz Power as Time Series, Channel MZO')
-
+plt.title('8-12 Hz Power as Time Series, Channel MZO')
 
 ## PROBLEM 10 ##
 plotAll(t, power_all, meg_label, '8-12Hz Power as Time Series, All Channels', 'Time [sec]', 'Power [AU^2]')
 
-
 ## PROBLEM 11 ##
-average_tf = np.mean(Zxx_all[f<maxFreq, :], axis=2)
-vmax = np.max(average_tf)
+average_tf = np.mean(Zxx_all, axis=2)
 
 fig = plt.figure()
-plt.pcolormesh(t, f[f<maxFreq], average_tf, vmax=vmax, cmap='viridis')
+plt.pcolormesh(t, f, average_tf, cmap='viridis')
 plt.colorbar()
-plt.ylim((0, maxFreq))
 plt.xlabel('Time [sec]')
 plt.ylabel('Frequency [Hz]')
 plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
@@ -263,12 +260,10 @@ plt.title('Time-Frequency Analysis,\nAveraged Across All Channels')
 
 ## PROBLEM 12 ##
 log_average_tf = np.log10(average_tf)
-vmax = np.max(log_average_tf)
 
 fig = plt.figure()
-plt.pcolormesh(t, f[f<maxFreq], log_average_tf, vmax=vmax, cmap='viridis')
+plt.pcolormesh(t, f, log_average_tf, cmap='viridis')
 plt.colorbar()
-plt.ylim((0, maxFreq))
 plt.xlabel('Time [sec]')
 plt.ylabel('Frequency [Hz]')
 plt.title('Time-Frequency Analysis,\nAveraged Across All Channels (log10 Scale)')
