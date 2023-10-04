@@ -1,4 +1,6 @@
+# Ignore virtual environment
+.venv
+# Ignore raw data files
 *.csv
 *.mat
-.venv
 *.nii
