@@ -4,3 +4,4 @@
 *.csv
 *.mat
 *.nii
+*.DS_Store
