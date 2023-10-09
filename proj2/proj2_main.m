@@ -125,10 +125,64 @@ plot(demean_stim2)
 
 % Describe a linear regression model that predicts each voxel’s signal as a linear combination of the two regressors obtained in 9). 
 
-% For each voxel, evaluate the model performance using F statistic. 
+X = [demean_stim1(1,1:590); demean_stim2(1,1:590); ones([1,590])]';
+Y = standard_data';
 
+B = inv(X'*X)*X'*Y;
+
+% For each voxel, evaluate the model performance using F statistic. 
 % For each voxel, evaluate the significance that each regressor explains the signal.
+
+fStats = zeros([124800,1]);
+pVals = zeros([124800,1]);
+
+for i = 1:124800
+    voxel = Y(:,i);
+    residuals = voxel - X*B(:,i);
+
+    SSR = sum((X*B(:,i) - mean(voxel)).^2);
+    SSE = sum(residuals.^2);
+    
+    % Calculate degrees of freedom
+    df_SSR = 2;
+    df_SSE = 590 - 3;
+    
+    % Calculate mean squares
+    MSR = SSR / df_SSR;
+    MSE = SSE / df_SSE;
+    
+    % Calculate the F-statistic
+    fStat = MSR / MSE;
+    fStats(i,1) = fStat;
+
+    % Calculate the p-value
+    pVal = 1 - fcdf(fStat, df_SSR, df_SSE);
+    pVals(i,1) = pVal;
+end
+
+figure()
+plot(pVals)
 
 % Show a map of the significant voxels above a significance level of 0.05. 
 
+pVal_map = reshape(pVals,[40,78,40]);
+binary_map = pVal_map > 0.05;           % note the only way you can see anything on the 3d plot is if you look at large p vals not small
+
+[x, y, z] = meshgrid(1:78, 1:40, 1:78);
+significant_voxels = find(binary_map);
+
+figure()
+scatter3(x(significant_voxels), y(significant_voxels), z(significant_voxels), 'filled', 'MarkerFaceColor', 'b');
+
+
 % Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
+
+[pFDR, q] = mafdr(pVals);
+pFDR_map = reshape(pFDR, [40, 78, 40]);
+
+binary_fdr_map = pFDR_map < 0.05;
+significant_voxels_fdr = find(binary_fdr_map);
+
+figure()
+scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled', 'MarkerFaceColor', 'r');
+
