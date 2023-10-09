@@ -121,7 +121,7 @@ figure()
 plot(demean_stim1)
 hold on
 plot(demean_stim2)
-
+xlabel()
 
 % Describe a linear regression model that predicts each voxel’s signal as a linear combination of the two regressors obtained in 9). 
 
