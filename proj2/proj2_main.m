@@ -15,12 +15,14 @@ data = img.img;
 % Spatially filter or smooth the images by applying a 3-D Gaussian filter with a full-width-at-half-maximum (FWHM=1mm or 10 * 1/10mm). 
 % This can be done either by using 3-D convolution or using pairs of 3-D fourier transform and inverse fourier transform. 
 % Use the smoothed data for subsequent analyses. 
-filt_data = zeros(size(data));
+filt_data_test = zeros(size(data));
 sigma = 10/(2*sqrt(2*log(2)));
 
 for i=1:size(data, 4)
-    filt_data(:, :, :, i) = imgaussfilt3(data(:, :, :, i), sigma);
+    filt_data_test(:, :, :, i) = imgaussfilt3(data(:, :, :, i), sigma);
 end
+
+filt_data = amri_fmri_smooth(data, 0.5, 1);
 
 %amri_fmri_sliceview(filt_data)
 
