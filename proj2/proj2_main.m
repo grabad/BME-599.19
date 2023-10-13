@@ -153,9 +153,9 @@ xlim([0 616])
 X = [reg1(1,1:590); reg2(1,1:590); ones([1,590])]';
 Y = standard_data';
 
-B = inv(X'*X)*X'*Y;
+B = (X'*X)\X'*Y;
 
-%% Q11
+%% Q11/12
 % For each voxel, evaluate the model performance using F statistic. 
 % For each voxel, evaluate the significance that each regressor explains the signal.
 
@@ -189,11 +189,11 @@ end
 figure()
 plot(pVals)
 
-%% Q12  
+%% Q13
 % Show a map of the significant voxels above a significance level of 0.05. 
 
 pVal_map = reshape(pVals,[40,78,40]);
-binary_map = pVal_map > 0.05;           % note the only way you can see anything on the 3d plot is if you look at large p vals not small
+binary_map = pVal_map < 0.05;
 
 [x, y, z] = meshgrid(1:78, 1:40, 1:78);
 significant_voxels = find(binary_map);
@@ -204,7 +204,7 @@ scatter3(x(significant_voxels), y(significant_voxels), z(significant_voxels), 'f
 %% Q14
 % Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
 
-[pFDR, q] = mafdr(pVals);
+[pFDR] = mafdr(pVals);
 pFDR_map = reshape(pFDR, [40, 78, 40]);
 
 binary_fdr_map = pFDR_map < 0.05;
