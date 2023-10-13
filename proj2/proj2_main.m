@@ -206,6 +206,16 @@ scatter3(x(significant_voxels), y(significant_voxels), z(significant_voxels), 'f
 
 %% Q14
 % Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
+corrected_pVals = fdr_bh(pVals);
+
+binary_corrected_pVals_map = reshape(corrected_pVals, [40, 78, 40]);
+significant_voxels_fdr = find(binary_corrected_pVals_map);
+
+figure()
+scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled', 'MarkerFaceColor', 'r');
+
+%% ****OLD Q14****
+% Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
 
 [pFDR] = mafdr(pVals);
 pFDR_map = reshape(pFDR, [40, 78, 40]);
