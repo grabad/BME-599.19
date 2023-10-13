@@ -202,7 +202,8 @@ binary_map = pVal_map < 0.05;
 significant_voxels = find(binary_map);
 
 figure()
-scatter3(x(significant_voxels), y(significant_voxels), z(significant_voxels), 'filled', 'MarkerFaceColor', 'b');
+scatter3(x(significant_voxels), y(significant_voxels), z(significant_voxels), 'filled');
+title('Voxels Significant to 0.05')
 
 %% Q14
 % Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
@@ -212,7 +213,8 @@ binary_corrected_pVals_map = reshape(corrected_pVals, [40, 78, 40]);
 significant_voxels_fdr = find(binary_corrected_pVals_map);
 
 figure()
-scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled', 'MarkerFaceColor', 'r');
+scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled');
+title({'Voxels Significant to 0.05', 'Corrected for Multiple Comparisons'})
 
 %% ****OLD Q14****
 % Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
