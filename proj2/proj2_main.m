@@ -90,14 +90,14 @@ end
 
 %% Q7
 % For each voxel, standardize the signal, such that the mean is zero and standard deviation is 1. 
-standard_data_test = (detrend(detrend_data,'constant'))./std(detrend_data);
-
-standard_data = zeros('like', detrend_data);
+standard_data = zeros(size(detrend_data));
 
 for i=1:size(detrend_data, 1)
     row_data = detrend_data(i,:);
-    standard_data(1,:) = (row_data -  mean(row_data))/std(row_data);
+    standard_data(i,:) = (row_data -  mean(row_data))./std(row_data);
 end
+
+standard_data(isnan(standard_data)) = 0;
 
 %% Q8
 % Load stim.mat. Two types of stimuli are stored as the two rows in stim_block. Plot each stimulus as a time series. 
