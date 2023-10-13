@@ -24,7 +24,7 @@ filt_data = amri_fmri_smooth(data, hdr.pixdim(2)/10, 10/10);
 
 %% Q3
 % Run SVD with the dataset. Plot the singular values. Report and discuss your observations.
-data_size = size(data)
+data_size = size(data);
 filt_data_flat = reshape(filt_data, [prod(data_size(1:3)), 590]);
 [U, S, V] = svd(filt_data_flat, 'econ');
 
