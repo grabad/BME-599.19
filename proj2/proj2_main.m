@@ -129,18 +129,28 @@ load('hrf.mat')
 stim1 = conv(stim_block(1,:),hrf);
 stim2 = conv(stim_block(2,:),hrf);
 
-demean_stim1 = detrend(stim1,'constant');
-demean_stim2 = detrend(stim2,'constant');
+reg1 = detrend(stim1,'constant');
+reg2 = detrend(stim2,'constant');
 
 figure()
-plot(demean_stim1)
-hold on
-plot(demean_stim2)
+subplot(2,1,1)
+plot(reg1)
+
+title('Regressor #1')
+ylabel('Regressor Magnitude [au]')
+xlim([0 616])
+
+subplot(2,1,2)
+plot(reg2)
+
+title('Regressor #2')
+ylabel('Regressor Magnitude [au]')
+xlim([0 616])
 
 %% Q10
 % Describe a linear regression model that predicts each voxel’s signal as a linear combination of the two regressors obtained in 9). 
 
-X = [demean_stim1(1,1:590); demean_stim2(1,1:590); ones([1,590])]';
+X = [reg1(1,1:590); reg2(1,1:590); ones([1,590])]';
 Y = standard_data';
 
 B = inv(X'*X)*X'*Y;
