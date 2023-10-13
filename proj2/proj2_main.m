@@ -60,18 +60,21 @@ ylabel('Singular Value Magnitude')
 xlim([0 100])
 
 figure()
+subplot(2,1,1)
 hold on
 plot(Ud(:, 1:3))
 
 title('Left Singular Vectors: Detrended Data')
 legend('LSV 1', 'LSV 2', 'LSV 3')
+xticklabels([])
 
-figure()
+subplot(2,1,2)
 hold on
 plot(Vd(:, 1:3))
 
 title('Right Singular Vectors: Detrended Data')
-legend('RSV 1', 'RSV 2', 'RSV 3')
+legend('RSV 1', 'RSV 2', 'RSV 3', Location='southeast')
+xticklabels([])
 
 %% Q6
 % Keep the largest K principal components such that these components explain the 90% of the total variance and discard other components 
@@ -212,4 +215,3 @@ significant_voxels_fdr = find(binary_fdr_map);
 
 figure()
 scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled', 'MarkerFaceColor', 'r');
-
