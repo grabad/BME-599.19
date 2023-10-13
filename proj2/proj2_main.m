@@ -106,19 +106,20 @@ load('stim.mat');
 time = linspace(0,708,590);
 
 figure()
+subplot(2,1,1)
 plot(time, stim_block(1,:))
 
-title('Stimuli #1')
+title('Stimulus #1')
 xlabel('Time [sec]')
-ylabel('Stimuli [unspecified]')
+ylabel('Stimulus Magnitude [au]')
 xlim([0 708])
 
-figure()
+subplot(2,1,2)
 plot(time, stim_block(2,:))
 
-title('Stimuli #2')
+title('Stimulus #2')
 xlabel('Time [sec]')
-ylabel('Stimuli [unspecified]')
+ylabel('Stimulus Magnitude [au]')
 xlim([0 708])
 
 %% Q9
