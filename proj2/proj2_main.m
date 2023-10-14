@@ -79,6 +79,7 @@ xticklabels([])
 %% Q6
 % Keep the largest K principal components such that these components explain the 90% of the total variance and discard other components 
 % from the data. What is the value of K? 
+warning('off')
 [coeff, score, latent, tsquared, explained] = pca(detrend_data);
 
 sum_var = 0;
@@ -129,8 +130,8 @@ xlim([0 708])
 % Convolve each of the two stimuli with a hemodynamic response function (HRF), which can be loaded from hrf.mat in the folder. 
 % Demean each Consider and plot the results as two regressors for subsequent analyses.
 load('hrf.mat')
-stim1 = conv(stim_block(1,:),hrf);
-stim2 = conv(stim_block(2,:),hrf);
+stim1 = conv(stim_block(1,:), hrf, 'same');
+stim2 = conv(stim_block(2,:), hrf, 'same');
 
 reg1 = detrend(stim1,'constant');
 reg2 = detrend(stim2,'constant');
@@ -141,22 +142,24 @@ plot(reg1)
 
 title('Regressor #1')
 ylabel('Regressor Magnitude [au]')
-xlim([0 616])
+xlim([0 590])
 
 subplot(2,1,2)
 plot(reg2)
 
 title('Regressor #2')
 ylabel('Regressor Magnitude [au]')
-xlim([0 616])
+xlim([0 590])
 
 %% Q10
 % Describe a linear regression model that predicts each voxel’s signal as a linear combination of the two regressors obtained in 9). 
+X = [reg1', reg2'];
+betas = zeros([2, 590]);
 
-X = [reg1(1,1:590); reg2(1,1:590); ones([1,590])]';
-Y = standard_data';
-
-B = (X'*X)\X'*Y;
+for i=1:size(standard_data, 1)
+    Y = standard_data(i,:)';
+    betas(:, i) = (X'*X)\X'*Y;
+end
 
 %% Q11/12
 % For each voxel, evaluate the model performance using F statistic. 
@@ -165,16 +168,16 @@ B = (X'*X)\X'*Y;
 fStats = zeros([124800,1]);
 pVals = zeros([124800,1]);
 
-for i = 1:124800
-    voxel = Y(:,i);
-    residuals = voxel - X*B(:,i);
+for i = 1:size(standard_data, 1)
+    voxel = standard_data(i, :)';
+    residuals = voxel - X*betas(:, i);
 
-    SSR = sum((X*B(:,i) - mean(voxel)).^2);
+    SSR = sum((X*betas(:, i) - mean(voxel)).^2);
     SSE = sum(residuals.^2);
     
     % Calculate degrees of freedom
-    df_SSR = 2;
-    df_SSE = 590 - 3;
+    df_SSR = 2 - 1;
+    df_SSE = 590 - 2;
     
     % Calculate mean squares
     MSR = SSR / df_SSR;
@@ -188,9 +191,6 @@ for i = 1:124800
     pVal = 1 - fcdf(fStat, df_SSR, df_SSE);
     pVals(i,1) = pVal;
 end
-
-figure()
-plot(pVals)
 
 %% Q13
 % Show a map of the significant voxels above a significance level of 0.05. 
@@ -215,15 +215,3 @@ significant_voxels_fdr = find(binary_corrected_pVals_map);
 figure()
 scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled');
 title({'Voxels Significant to 0.05', 'Corrected for Multiple Comparisons'})
-
-%% ****OLD Q14****
-% Show the map again after correction for multiple comparisons using false discovery rate < 0.05. 
-
-[pFDR] = mafdr(pVals);
-pFDR_map = reshape(pFDR, [40, 78, 40]);
-
-binary_fdr_map = pFDR_map < 0.05;
-significant_voxels_fdr = find(binary_fdr_map);
-
-figure()
-scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled', 'MarkerFaceColor', 'r');
