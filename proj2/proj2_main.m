@@ -1,6 +1,7 @@
 clear
 close all
 
+tic
 %% Q1
 % Load the image file. Specify the image size in terms of the number of spatial locations and time points. 
 % What is the size of a voxel? What is the sampling interval? 
@@ -83,9 +84,9 @@ warning('off')
 [coeff, score, latent, tsquared, explained] = pca(detrend_data);
 
 sum_var = 0;
-for i=explained
+for i=1:590
     if sum_var < 90
-        sum_var = sum_var + i;
+        sum_var = sum_var + explained(i);
         K = i;
     else
         break
@@ -215,3 +216,4 @@ significant_voxels_fdr = find(binary_corrected_pVals_map);
 figure()
 scatter3(x(significant_voxels_fdr), y(significant_voxels_fdr), z(significant_voxels_fdr), 'filled');
 title({'Voxels Significant to 0.05', 'Corrected for Multiple Comparisons'})
+toc
