@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 import scipy.signal as ss
 import seaborn as sns
+from sklearn.cluster import KMeans
+from itertools import chain
 
 sns.set()
 
@@ -27,22 +29,22 @@ for i in range(5):
 print()
 
 ## 3. Evaluate the correlation between every pair of different channels. 
-pairs =  np.array([[0, 1],
-          [0, 2],
-          [0, 3],
-          [0, 4],
-          [1, 2],
-          [1, 3],
-          [1, 4],
-          [2, 3],
-          [2, 4],
+pairs =  np.array([[0, 1], 
+          [0, 2], 
+          [0, 3], 
+          [0, 4], 
+          [1, 2], 
+          [1, 3], 
+          [1, 4], 
+          [2, 3], 
+          [2, 4], 
           [3, 4]])
 
 coefs = np.zeros(10)
 
 for i in range(10):
-    coefs[i] = np.corrcoef(data[pairs[i,0]], data[pairs[i,1]])[0, 1]
-    print(f'Correlation between Channel {pairs[i,0]+1} and {pairs[i,1]+1}: {coefs[i]}')
+    coefs[i] = np.corrcoef(data[pairs[i, 0]], data[pairs[i, 1]])[0, 1]
+    print(f'Correlation between Channel {pairs[i, 0]+1} and {pairs[i, 1]+1}: {coefs[i]}')
 print()
 
 ## 4. For each channel, detect the neuronal spikes. Hint: this is an open-ended question. 
@@ -58,11 +60,11 @@ def find_spikes(data, mean, stdev, fs, window):
     return peaks
 
 window = 0.005
-peaks_0 = find_spikes(data[0,:], means[0], stdevs[0], fs, window)
-peaks_1 = find_spikes(data[1,:], means[1], stdevs[1], fs, window)
-peaks_2 = find_spikes(data[2,:], means[2], stdevs[2], fs, window)
-peaks_3 = find_spikes(data[3,:], means[3], stdevs[3], fs, window)
-peaks_4 = find_spikes(data[4,:], means[4], stdevs[4], fs, window)
+peaks = [find_spikes(data[0, :], means[0], stdevs[0], fs, window), 
+        find_spikes(data[1, :], means[1], stdevs[1], fs, window), 
+        find_spikes(data[2, :], means[2], stdevs[2], fs, window), 
+        find_spikes(data[3, :], means[3], stdevs[3], fs, window), 
+        find_spikes(data[4, :], means[4], stdevs[4], fs, window)]
 
 ## 5. For each spike you have detected in 4, choose a short window around the peak of the spike. 
 ## The window is often very short. You may explore the data and exercise your own judgment. 
@@ -79,10 +81,24 @@ def spike_shape(data, spike_index, fs, window):
 
     return spike
 
-spike_0 = spike_shape(data[0,:], peaks_0[0], fs, window)
+spike_0 = spike_shape(data[0, :], peaks[0][0], fs, window)
 
 ## 6. Find a way to cluster the spike shape using k-means clustering. Each cluster corresponds to one neuron. 
 ## Hint: you may define features of each spike using PCA or SVD, or other ways you would come up with. This is again open-ended. 
+spike_means = np.zeros(len(list(chain(*peaks))))
+spike_vars = np.zeros(len(list(chain(*peaks))))
+count = 0
+
+for row_index in range(5):
+    for peak_index in peaks[row_index]:
+        spike = spike_shape(data[row_index, :], peak_index, fs, window)
+
+        spike_means[count] = np.mean(spike)
+        spike_vars[count] = np.var(spike)
+
+        count = count + 1
+
+cluster_data = zip(spike_means, spike_vars)
 
 ## 7. Justify the number of clusters (or neurons) Calculate the centroid of each cluster. 
 ## Use this centroid to obtain the average spike shape of each neuron. 
