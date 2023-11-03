@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
-import scipy.signal as scs
+import scipy.signal as ss
 import seaborn as sns
 
 sns.set()
@@ -12,7 +12,6 @@ raw_data = loadmat('proj3/data.mat')
 data = raw_data['data']
 fs = raw_data['fs'][0][0]
 stim = raw_data['stim']
-
 data_length = np.size(data, axis=1)
 time_length = data_length/fs
 
@@ -50,12 +49,37 @@ print()
 ## You need to observe the data first and come up with your own criteria for a spike. 
 ## Typically, a spike will show a peak that deviates from the baseline (often just the mean) by a 
 ## notable extent (e.g., multiple times of a standard deviation). The peak may be either positive or negative. Exercise your own judgment. 
+def find_spikes(data, mean, stdev, fs, window):
+    peaks_p, _ = ss.find_peaks(data, height=(mean+2*stdev), distance=int(fs*window))
+    peaks_n, _ = ss.find_peaks(-data, height=(-mean+2*stdev), distance=int(fs*window))
+    peaks = np.concatenate((peaks_p, peaks_n))
+    peaks.sort()
 
+    return peaks
+
+window = 0.005
+peaks_0 = find_spikes(data[0,:], means[0], stdevs[0], fs, window)
+peaks_1 = find_spikes(data[1,:], means[1], stdevs[1], fs, window)
+peaks_2 = find_spikes(data[2,:], means[2], stdevs[2], fs, window)
+peaks_3 = find_spikes(data[3,:], means[3], stdevs[3], fs, window)
+peaks_4 = find_spikes(data[4,:], means[4], stdevs[4], fs, window)
 
 ## 5. For each spike you have detected in 4, choose a short window around the peak of the spike. 
 ## The window is often very short. You may explore the data and exercise your own judgment. 
 ## For example, a window may start from 0.5 ms before the peak and 0.5 ms after the peak. 
 ## The signal within such a window defines the shape of each spike you have detected. 
+def spike_shape(data, spike_index, fs, window):
+    start = int(spike_index - fs*window) - 1
+    if start < 0: start = 0
+
+    stop = int(spike_index + fs*window)
+    if stop > len(data): stop = len(data)
+
+    spike = data[start:stop]
+
+    return spike
+
+spike_0 = spike_shape(data[0,:], peaks_0[0], fs, window)
 
 ## 6. Find a way to cluster the spike shape using k-means clustering. Each cluster corresponds to one neuron. 
 ## Hint: you may define features of each spike using PCA or SVD, or other ways you would come up with. This is again open-ended. 
